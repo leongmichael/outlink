@@ -5,7 +5,7 @@ const analyticsSchema = mongoose.Schema(
     basicRequestCount: Number,
     advancedRequestCount: Number,
   },
-  { collection: "analytics" }
+  { collection: "analytics" },
 );
 
 var AnalyticsModel = mongoose.model("Analytics", analyticsSchema);

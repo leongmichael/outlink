@@ -26,7 +26,7 @@ router.patch("/requestUpdate/:pageType", async (req, res) => {
         let newBasicCount = analyticsObj.basicRequestCount + 1;
         let result = await AnalyticsModel.findOneAndUpdate(
           { _id: analyticsObj._id },
-          { basicRequestCount: newBasicCount }
+          { basicRequestCount: newBasicCount },
         );
         res.json(result);
       }
@@ -34,7 +34,7 @@ router.patch("/requestUpdate/:pageType", async (req, res) => {
         let newAdvancedCount = analyticsObj.advancedRequestCount + 1;
         let result = await AnalyticsModel.findOneAndUpdate(
           { _id: analyticsObj._id },
-          { advancedRequestCount: newAdvancedCount }
+          { advancedRequestCount: newAdvancedCount },
         );
         res.json(result);
       }
