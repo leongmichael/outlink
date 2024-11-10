@@ -23,7 +23,7 @@ const HomeScreen: React.FC = () => {
 
       <TouchableOpacity
         style={[styles.button, styles.registerButton]}
-        onPress={() => navigation.navigate('RegisterScreen')}
+        onPress={() => navigation.navigate('signup')}
       >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
