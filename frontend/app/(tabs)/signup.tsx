@@ -1,70 +1,154 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, ScrollView } from 'react-native';
+import { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { TextInput, Button, Checkbox } from 'react-native-paper';
 
 export default function SignUp() {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: '',
+    birthdate: new Date(),
+    preferences: {
+      land: false,
+      water: false,
+      casual: false,
+      competitive: false,
+    },
+    gender: '',
+    city: '',
+    zipcode: '',
+  });
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <ScrollView style={styles.container}>
+      <ThemedView style={styles.formContainer}>
+        <ThemedText type="title" style={styles.title}>Sign Up</ThemedText>
+
+        <TextInput
+          label="Email"
+          value={formData.email}
+          onChangeText={(text) => setFormData({...formData, email: text})}
+          style={styles.input}
+          mode="outlined"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+
+        <TextInput
+          label="Password"
+          value={formData.password}
+          onChangeText={(text) => setFormData({...formData, password: text})}
+          secureTextEntry
+          style={styles.input}
+          mode="outlined"
+        />
+
+        <TextInput
+          label="Full Name"
+          value={formData.name}
+          onChangeText={(text) => setFormData({...formData, name: text})}
+          style={styles.input}
+          mode="outlined"
+        />
+
+        <ThemedText style={styles.label}>Birthdate</ThemedText>
+        <DateTimePicker
+          value={formData.birthdate}
+          onChange={(event, date) => date && setFormData({...formData, birthdate: date})}
+          mode="date"
+        />
+
+        <ThemedText style={styles.label}>Preferences</ThemedText>
+        <ThemedView style={styles.checkboxGroup}>
+          <Checkbox.Item label="Land Activities" status={formData.preferences.land ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, land: !formData.preferences.land}})} />
+          <Checkbox.Item label="Water Activities" status={formData.preferences.water ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, water: !formData.preferences.water}})} />
+          <Checkbox.Item label="Casual Activities" status={formData.preferences.casual ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, casual: !formData.preferences.casual}})} />
+          <Checkbox.Item label="Competitive Sports" status={formData.preferences.competitive ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, competitive: !formData.preferences.competitive}})} />
+        </ThemedView>
+
+        <ThemedText style={styles.label}>Gender</ThemedText>
+        <ThemedView style={styles.radioGroup}>
+          {['Male', 'Female', 'Do not wish to state', 'Other'].map((option) => (
+            <Button
+              key={option}
+              mode={formData.gender === option ? 'contained' : 'outlined'}
+              onPress={() => setFormData({...formData, gender: option})}
+              style={styles.radioButton}
+            >
+              {option}
+            </Button>
+          ))}
+        </ThemedView>
+
+        <TextInput
+          label="City"
+          value={formData.city}
+          onChangeText={(text) => setFormData({...formData, city: text})}
+          style={styles.input}
+          mode="outlined"
+        />
+
+        <TextInput
+          label="Zipcode"
+          value={formData.zipcode}
+          onChangeText={(text) => setFormData({...formData, zipcode: text})}
+          style={styles.input}
+          mode="outlined"
+          keyboardType="numeric"
+        />
+
+        <Button mode="contained" style={styles.submitButton} onPress={() => console.log(formData)}>
+          Sign Up
+        </Button>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">signup</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  formContainer: {
+    padding: 20,
+    gap: 10,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  label: {
+    fontSize: 16,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  checkboxGroup: {
+    gap: 5,
+  },
+  radioGroup: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  radioButton: {
+    flex: 1,
+    minWidth: '45%',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  submitButton: {
+    marginTop: 20,
+    paddingVertical: 8,
   },
 });
