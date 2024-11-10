@@ -1,10 +1,17 @@
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
-import mongoose from "mongoose";
-import morgan from "morgan";
+// import cors from "cors";
+// import dotenv from "dotenv";
+// import express from "express";
+// import mongoose from "mongoose";
+// import morgan from "morgan";
 
-import analyticsRoutes from "./routes/analytics.js";
+// import userRoutes from "./routes/userRoutes.js";
+
+const cors = require("cors");
+const dotenv = require("dotenv");
+const express = require("express");
+const mongoose = require("mongoose");
+const morgan = require("morgan");
+const userRoutes = require("./routes/userRoutes.js");
 
 // app
 const app = express();
@@ -16,7 +23,7 @@ app.use(express.json());
 dotenv.config();
 
 //routes
-app.use("/analytics", analyticsRoutes);
+app.use("/", userRoutes);
 
 //connect
 mongoose.connect(process.env.CONNECTION_URL);
@@ -26,5 +33,5 @@ db.once("open", () => console.log(`Connected to database`));
 //listener
 const port = 8080;
 const server = app.listen(port, () =>
-  console.log(`Server is running on port ${port}`),
+  console.log(`Server is running on port ${port}`)
 );
