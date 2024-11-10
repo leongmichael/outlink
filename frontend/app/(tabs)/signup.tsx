@@ -2,6 +2,7 @@ import { Image, StyleSheet, Platform, ScrollView } from 'react-native';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTheme } from 'react-native-paper';
+import { router } from 'expo-router';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -111,11 +112,12 @@ export default function SignUp() {
   const handleSubmit = async () => {
     if (validateForm()) {
       try {
-        // Get the formatted data directly
         const formattedData = applyBackendFormat();
-        console.log('Sending data:', formattedData); // Debug log
+        console.log('Sending data:', formattedData);
         const result = await createUser(formattedData);
         console.log('User created successfully:', result);
+        
+        router.replace('/(tabs)/');
         
       } catch (error) {
         console.error('Failed to create user:', error);
