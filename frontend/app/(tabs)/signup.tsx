@@ -1,12 +1,15 @@
 import { Image, StyleSheet, Platform, ScrollView } from 'react-native';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useTheme } from 'react-native-paper';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { TextInput, Button, Checkbox } from 'react-native-paper';
 
 export default function SignUp() {
+  const theme = useTheme();
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -34,6 +37,8 @@ export default function SignUp() {
           onChangeText={(text) => setFormData({...formData, email: text})}
           style={styles.input}
           mode="outlined"
+          activeOutlineColor="#6A8A73"
+          outlineColor="#6A8A73"
         />
 
         <TextInput
@@ -43,6 +48,8 @@ export default function SignUp() {
           secureTextEntry
           style={styles.input}
           mode="outlined"
+          activeOutlineColor="#6A8A73"
+          outlineColor="#6A8A73"
         />
 
         <TextInput
@@ -51,6 +58,8 @@ export default function SignUp() {
           onChangeText={(text) => setFormData({...formData, name: text})}
           style={styles.input}
           mode="outlined"
+          activeOutlineColor="#6A8A73"
+          outlineColor="#6A8A73"
         />
 
         <ThemedText style={styles.label}>Birthdate</ThemedText>
@@ -62,14 +71,30 @@ export default function SignUp() {
 
         <ThemedText style={styles.label}>Preferences</ThemedText>
         <ThemedView style={styles.checkboxGroup}>
-          <Checkbox.Item label="Land Activities" status={formData.preferences.land ? 'checked' : 'unchecked'}
-            onPress={() => setFormData({...formData, preferences: {...formData.preferences, land: !formData.preferences.land}})} />
-          <Checkbox.Item label="Water Activities" status={formData.preferences.water ? 'checked' : 'unchecked'}
-            onPress={() => setFormData({...formData, preferences: {...formData.preferences, water: !formData.preferences.water}})} />
-          <Checkbox.Item label="Casual Activities" status={formData.preferences.casual ? 'checked' : 'unchecked'}
-            onPress={() => setFormData({...formData, preferences: {...formData.preferences, casual: !formData.preferences.casual}})} />
-          <Checkbox.Item label="Competitive Sports" status={formData.preferences.competitive ? 'checked' : 'unchecked'}
-            onPress={() => setFormData({...formData, preferences: {...formData.preferences, competitive: !formData.preferences.competitive}})} />
+          <Checkbox.Item 
+            label="Land Activities" 
+            status={formData.preferences.land ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, land: !formData.preferences.land}})}
+            color="#6A8A73"
+          />
+          <Checkbox.Item 
+            label="Water Activities" 
+            status={formData.preferences.water ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, water: !formData.preferences.water}})}
+            color="#6A8A73"
+          />
+          <Checkbox.Item 
+            label="Casual Activities" 
+            status={formData.preferences.casual ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, casual: !formData.preferences.casual}})}
+            color="#6A8A73"
+          />
+          <Checkbox.Item 
+            label="Competitive Sports" 
+            status={formData.preferences.competitive ? 'checked' : 'unchecked'}
+            onPress={() => setFormData({...formData, preferences: {...formData.preferences, competitive: !formData.preferences.competitive}})}
+            color="#6A8A73"
+          />
         </ThemedView>
 
         <ThemedText style={styles.label}>Gender</ThemedText>
@@ -80,6 +105,7 @@ export default function SignUp() {
               label={option}
               status={formData.gender === option ? 'checked' : 'unchecked'}
               onPress={() => setFormData({...formData, gender: option})}
+              color="#6A8A73"
             />
           ))}
         </ThemedView>
@@ -90,6 +116,8 @@ export default function SignUp() {
           onChangeText={(text) => setFormData({...formData, city: text})}
           style={styles.input}
           mode="outlined"
+          activeOutlineColor="#6A8A73"
+          outlineColor="#6A8A73"
         />
 
         <TextInput
@@ -99,9 +127,15 @@ export default function SignUp() {
           style={styles.input}
           mode="outlined"
           keyboardType="numeric"
+          activeOutlineColor="#6A8A73"
+          outlineColor="#6A8A73"
         />
 
-        <Button mode="contained" style={styles.submitButton} onPress={() => console.log(formData)}>
+        <Button 
+          mode="contained" 
+          style={styles.submitButton} 
+          buttonColor="#6A8A73"
+          onPress={() => console.log(formData)}>
           Sign Up
         </Button>
       </ThemedView>
@@ -123,6 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 45,
     textAlign: 'center',
+    color: '#6A8A73',
   },
   input: {
     backgroundColor: '#fff',
@@ -132,6 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     marginBottom: 5,
+    color: '#6A8A73',
   },
   checkboxGroup: {
     gap: 5,
