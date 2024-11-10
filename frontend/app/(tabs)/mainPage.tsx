@@ -10,28 +10,53 @@ import EventModal from '../../components/EventModal';  // Make sure this is the 
 
 type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
+const API_URL = 'http://localhost:8080';
+
 const MainPage: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>();
 
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
   const [isModalVisible, setIsModalVisible] = useState(false); // State for controlling modal visibility
-  const [savedActivities, setSavedActivities] = useState<string[]>([]);
   const translateX = useSharedValue(0);
+  const userId = '6730848a218bf1def019bcb6';
 
   // Sample static activity data
   const activity = {
-    id: '1',
+    eventId: '6730508fa6674ec63f2142ee',
     title: 'Yoga Workshop',
     description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
     date: '2024-11-12',
     ageRange:'18-22'
   };
 
+  // API call to add activity to user's list
+  const addActivityToUserList = async () => {
+    try {
+      const response = await fetch(`${API_URL}/user/addEvent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          eventId: activity.eventId,
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
+      } else {
+        const error = await response.json();
+        Alert.alert('Error', error.message || 'Failed to add activity');
+      }
+    } catch (error) {
+      console.error('Error adding activity:', error);
+      Alert.alert('Error', 'Could not connect to server');
+    }
+  };
+
   // Handler for swipe gestures
   const handleSwipe = (direction: 'left' | 'right') => {
     if (direction === 'right') {
-      setSavedActivities((prev) => [...prev, activity.title]);
-      Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
+      addActivityToUserList(); // Call backend API to add activity
     }
     setIsActivityVisible(false); // Hide activity after swipe
   };
