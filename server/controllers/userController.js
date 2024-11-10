@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+
 const mongoose = require("mongoose");
+
 
 // register a user
 const createUser = async (req, res) => {
@@ -55,6 +57,7 @@ const loginUser = async (req, res) => {
     res.status(401).json({ mssg: error.message });
   }
 };
+
 
 // user add event
 const addEvent = async (req, res) => {
