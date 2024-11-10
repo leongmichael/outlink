@@ -7,6 +7,8 @@ import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-g
 import Animated, { useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
 import EventModal from '../../components/EventModal';  // Make sure this is the correct relative path
 
+import { useUser } from '@/context/UserContext';
+
 
 type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -18,11 +20,12 @@ const MainPage: React.FC = () => {
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
   const [isModalVisible, setIsModalVisible] = useState(false); // State for controlling modal visibility
   const translateX = useSharedValue(0);
-  const userId = '6730848a218bf1def019bcb6';
+
+  const { userId } = useUser(); // Get userId from context
 
   // Sample static activity data
   const activity = {
-    eventId: '6730508fa6674ec63f2142ee',
+    eventId: '67306d90ea11ef1c50f03046',
     title: 'Yoga Workshop',
     description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
     date: '2024-11-12',
