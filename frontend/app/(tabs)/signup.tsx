@@ -73,16 +73,14 @@ export default function SignUp() {
         </ThemedView>
 
         <ThemedText style={styles.label}>Gender</ThemedText>
-        <ThemedView style={styles.radioGroup}>
+        <ThemedView style={styles.checkboxGroup}>
           {['Male', 'Female', 'Do not wish to state', 'Other'].map((option) => (
-            <Button
+            <Checkbox.Item
               key={option}
-              mode={formData.gender === option ? 'contained' : 'outlined'}
+              label={option}
+              status={formData.gender === option ? 'checked' : 'unchecked'}
               onPress={() => setFormData({...formData, gender: option})}
-              style={styles.radioButton}
-            >
-              {option}
-            </Button>
+            />
           ))}
         </ThemedView>
 
