@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
@@ -13,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useUser } from '@/context/UserContext';
 
-const SWIPE_THRESHOLD = 120;
+const SWIPE_THRESHOLD = 160;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const API_URL = 'http://localhost:8080';
@@ -90,7 +90,7 @@ const MainPage: React.FC = () => {
 
   const addEventToUser = async (eventId: string) => {
     try {
-      await fetch(`${API_URL}/users/addEvent`, {
+      await fetch(`${API_URL}/user/addEvent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,6 +102,8 @@ const MainPage: React.FC = () => {
       });
       console.log("user id: ", userId);
       console.log("event id: ", eventId);
+
+      Alert.alert('Event Added', 'The event has been added to your activities.');
     } catch (error) {
       console.error('Error adding event:', error);
     }
@@ -112,7 +114,7 @@ const MainPage: React.FC = () => {
       addEventToUser(currentEvents[currentEventIndex]._id);
     }
     setCurrentEventIndex(prev => prev + 1);
-    translateX.value = 0;
+    translateX.value = withSpring(0);
   };
 
   const gestureHandler = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
@@ -123,9 +125,8 @@ const MainPage: React.FC = () => {
       if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
         translateX.value = withSpring(Math.sign(event.translationX) * SCREEN_WIDTH);
         runOnJS(handleSwipe)(event.translationX > 0 ? 'right' : 'left');
-      } else {
-        translateX.value = withSpring(0);
-      }
+      } 
+      translateX.value = withSpring(0);
     },
   });
 

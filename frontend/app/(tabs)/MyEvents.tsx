@@ -70,7 +70,7 @@ const MyEvents: React.FC = () => {
               style={styles.eventContainer}
               onPress={() => handleEventPress(event)}
             >
-              <Text style={styles.eventTitle}>{event.title}</Text>
+              <Text style={styles.eventTitle}>Event: {event.location}</Text>
               <Text style={styles.eventDate}>Date: {new Date(event.date).toLocaleDateString()}</Text>
               <Text style={styles.eventDescription} numberOfLines={2}>
                 {event.description}
