@@ -7,6 +7,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { TextInput, Button, Checkbox } from 'react-native-paper';
 
+const API_URL = 'http://localhost:8080'; // Change this to your server URL
+
 export default function SignUp() {
   const theme = useTheme();
   const [errors, setErrors] = useState({});
@@ -78,11 +80,53 @@ export default function SignUp() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const createUser = async (userData) => {
+    try {
+      const response = await fetch(`${API_URL}/user/createAccount`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     if (validateForm()) {
-      await applyBackendFormat();
-      console.log(backendFormat);
-      // Here you can add your API call or navigation logic
+      try {
+        await applyBackendFormat();
+        // Add userId to match the server's expected format
+        const userDataWithId = {
+          ...backendFormat,
+          admin: {
+            ...backendFormat.admin,
+            userId: Math.floor(Math.random() * 1000000) // Temporary ID generation
+          }
+        };
+        
+        const result = await createUser(userDataWithId);
+        console.log('User created successfully:', result);
+        // Handle successful creation (e.g., navigate to login or home screen)
+        
+      } catch (error) {
+        console.error('Failed to create user:', error);
+        // Handle error (e.g., show error message to user)
+        setErrors(prev => ({
+          ...prev,
+          submit: 'Failed to create account. Please try again.'
+        }));
+      }
     }
   };
 
@@ -235,6 +279,10 @@ export default function SignUp() {
         />
         {errors.zipcode && (
           <ThemedText style={styles.errorText}>{errors.zipcode}</ThemedText>
+        )}
+
+        {errors.submit && (
+          <ThemedText style={styles.errorText}>{errors.submit}</ThemedText>
         )}
 
         <Button 
