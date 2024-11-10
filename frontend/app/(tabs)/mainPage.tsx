@@ -15,7 +15,7 @@ const MainPage: React.FC = () => {
 
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
   const translateX = useSharedValue(0);
-  const userId = '67306f1e7a6c2bb4d02ecc27';
+  const userId = '6730848a218bf1def019bcb6';
 
   // Sample static activity data
   const activity = {
