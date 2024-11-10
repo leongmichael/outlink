@@ -4,6 +4,7 @@ const {
   getEvent,
   randomEvent,
   getEventIdsByDate,
+  getEventsByDateRange,
 } = require("../controllers/eventController");
 
 const router = express.Router();
@@ -18,6 +19,9 @@ router.post("/getEvent", getEvent);
 router.get("/randomEvent", randomEvent);
 
 router.post("/eventIdsByDate", getEventIdsByDate);
+
+// get events for 5-day range
+router.post("/getEventsByDateRange", getEventsByDateRange);
 
 // modify event
 

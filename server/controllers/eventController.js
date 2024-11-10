@@ -77,9 +77,41 @@ const getEventIdsByDate = async (req, res) => {
   }
 };
 
+const getEventsByDateRange = async (req, res) => {
+  const { date } = req.body;
+  try {
+    // Ensure the date is valid
+    if (!Date.parse(date)) {
+      throw new Error("Invalid date format. Use YYYY-MM-DD.");
+    }
+
+    // Convert the input date to start of day
+    const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
+
+    // Calculate end date (5 days from start date)
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 5);
+    endDate.setHours(23, 59, 59, 999);
+
+    // Query events within the date range
+    const events = await Event.find({
+      date: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
   randomEvent,
   getEventIdsByDate,
+  getEventsByDateRange,
 };
