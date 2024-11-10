@@ -3,6 +3,7 @@ const {
   createEvent,
   getEvent,
   randomEvent,
+  getEventIdsByDate,
 } = require("../controllers/eventController");
 
 const router = express.Router();
@@ -15,6 +16,8 @@ router.post("/getEvent", getEvent);
 
 // delete event
 router.get("/randomEvent", randomEvent);
+
+router.post("/eventIdsByDate", getEventIdsByDate);
 
 // modify event
 

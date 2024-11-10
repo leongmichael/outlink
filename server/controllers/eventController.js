@@ -50,8 +50,36 @@ const randomEvent = async (req, res) => {
   }
 };
 
+const getEventIdsByDate = async (req, res) => {
+  const { date } = req.body;
+  try {
+    // Ensure the date is valid
+    if (!Date.parse(date)) {
+      throw new Error("Invalid date format. Use YYYY-MM-DD.");
+    }
+
+    // Convert the input date to the start and end of the day
+    const queryDate = new Date(date);
+
+    // Query events within the date range
+    const events = await Event.find({
+      date: {
+        $gte: queryDate.setHours(0, 0, 0, 0), // Start of the day
+        $lt: queryDate.setHours(23, 59, 59, 999), // End of the day
+      },
+    }).select("_id"); // Only select the _id field
+
+    // Extract and return the event IDs
+    const eventIds = events.map((event) => event._id.toString());
+    res.status(200).json({ mssg: eventIds });
+  } catch (error) {
+    res.status(500).json({ mssg: error.message });
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
   randomEvent,
+  getEventIdsByDate,
 };

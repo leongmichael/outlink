@@ -114,7 +114,9 @@ const getUserEvents = async (req, res) => {
     res.status(200).json(events);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred while fetching user events" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching user events" });
   }
 };
 
