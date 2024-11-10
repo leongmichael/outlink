@@ -6,7 +6,7 @@ const createUser = async (req, res) => {
   try {
     // get user information
     const {
-      admin: { userId, email, password },
+      admin: { email, password },
       preferences,
       personal: { zipCode, city, gender, birthdate, points },
     } = req.body;
@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
 
     // create a new user
     const newUser = await User.create({
-      admin: { userId, email, password },
+      admin: { email, password },
       preferences,
       personal: { zipCode, city, gender, birthdate, points },
     });
