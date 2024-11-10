@@ -5,29 +5,58 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import Animated, { useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
+import EventModal from '../../components/EventModal';  // Make sure this is the correct relative path
+
 
 type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
+
+const API_URL = 'http://localhost:8080';
 
 const MainPage: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>();
 
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
-  const [savedActivities, setSavedActivities] = useState<string[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for controlling modal visibility
   const translateX = useSharedValue(0);
+  const userId = '6730848a218bf1def019bcb6';
 
   // Sample static activity data
   const activity = {
-    id: '1',
+    eventId: '6730508fa6674ec63f2142ee',
     title: 'Yoga Workshop',
     description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
     date: '2024-11-12',
+    ageRange:'18-22'
+  };
+
+  // API call to add activity to user's list
+  const addActivityToUserList = async () => {
+    try {
+      const response = await fetch(`${API_URL}/user/addEvent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          eventId: activity.eventId,
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
+      } else {
+        const error = await response.json();
+        Alert.alert('Error', error.message || 'Failed to add activity');
+      }
+    } catch (error) {
+      console.error('Error adding activity:', error);
+      Alert.alert('Error', 'Could not connect to server');
+    }
   };
 
   // Handler for swipe gestures
   const handleSwipe = (direction: 'left' | 'right') => {
     if (direction === 'right') {
-      setSavedActivities((prev) => [...prev, activity.title]);
-      Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
+      addActivityToUserList(); // Call backend API to add activity
     }
     setIsActivityVisible(false); // Hide activity after swipe
   };
@@ -54,6 +83,15 @@ const MainPage: React.FC = () => {
     transform: [{ translateX: translateX.value }],
   }));
 
+  // Toggle modal visibility
+  const handleEventPress = () => {
+    setIsModalVisible(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -62,9 +100,12 @@ const MainPage: React.FC = () => {
         {isActivityVisible && ( // Conditional rendering based on visibility state
           <PanGestureHandler onGestureEvent={gestureHandler}>
             <Animated.View style={[styles.activityContainer, animatedStyle]}>
+            <TouchableOpacity onPress={handleEventPress}> 
               <Text style={styles.activityTitle}>{activity.title}</Text>
               <Text style={styles.activityDate}>Date: {activity.date}</Text>
               <Text style={styles.activityDescription}>{activity.description}</Text>
+              <Text style={styles.activityAgeRange}>Age Range: {activity.ageRange}</Text>
+            </TouchableOpacity>
             </Animated.View>
           </PanGestureHandler>
         )}
@@ -86,6 +127,12 @@ const MainPage: React.FC = () => {
           <Text style={styles.navButtonText}>My Events</Text>
         </TouchableOpacity>
       </View>
+      {/* EventModal component */}
+      <EventModal
+        isVisible={isModalVisible}
+        activity={activity}
+        onClose={handleCloseModal}
+      />
     </View>
   );
 };
@@ -127,6 +174,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#666',
     marginBottom: 20,
+  },
+  activityAgeRange: {
+    fontSize: 18,
+    color: '#555',
+    marginTop: 10,
   },
   activityDescription: {
     fontSize: 22,
