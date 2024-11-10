@@ -4,10 +4,12 @@ import { router } from 'expo-router';
 import { TextInput, Button } from 'react-native-paper';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useUser } from '@/context/UserContext';
 
 const API_URL = 'http://localhost:8080';
 
 const Login = () => {
+  const { setUserId, setUserEmail } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -49,6 +51,10 @@ const Login = () => {
 
         const data = await response.json();
         console.log('Login successful:', data);
+        
+        // Store user data in context
+        setUserId(data.user._id);
+        setUserEmail(data.user.admin.email);
         
         // Navigate to home page on successful login
         router.replace('/(tabs)/mainPage');
