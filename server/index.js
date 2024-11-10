@@ -15,6 +15,7 @@ app.use(express.json());
 dotenv.config();
 
 //routes
+
 app.use("/user", userRoutes);
 app.use("/events", eventRoutes);
 

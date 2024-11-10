@@ -3,9 +3,13 @@ const { createEvent } = require("../controllers/eventController");
 
 const router = express.Router();
 
-// create user
+// create event
 router.post("/createEvent", createEvent);
 
-// create event
+// get event info
+
+// delete event
+
+// modify event
 
 module.exports = router;

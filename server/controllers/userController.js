@@ -1,8 +1,9 @@
 const User = require("../models/user");
+const Events = require("../models/event");
+
 const bcrypt = require("bcryptjs");
 
 const mongoose = require("mongoose");
-
 
 // register a user
 const createUser = async (req, res) => {
@@ -58,7 +59,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-
 // user add event
 const addEvent = async (req, res) => {
   try {
@@ -68,16 +68,23 @@ const addEvent = async (req, res) => {
     }
     // Find the user by ID
     const user = await User.findById(userId);
-
+    const event = await Events.findById(eventId);
     // If user not found, return an error response
     if (!user) {
       return res.status(404).json({ error: "User not found" });
+    }
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
     }
 
     // Check if the event already exists in the user's events
     if (!user.events.includes(eventId)) {
       user.events.push(eventId); // Add event ID to the user's events array
       await user.save(); // Save changes to the database
+    }
+    if (!event.users.includes(userId)) {
+      event.users.push(userId);
+      await event.save();
     }
 
     res.status(200).json({ message: "Event added to user", user });
