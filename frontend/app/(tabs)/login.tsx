@@ -51,7 +51,7 @@ const Login = () => {
         console.log('Login successful:', data);
         
         // Navigate to home page on successful login
-        router.replace('/(tabs)/');
+        router.replace('/(tabs)/mainPage');
         
       } catch (error) {
         console.error('Login error:', error);
