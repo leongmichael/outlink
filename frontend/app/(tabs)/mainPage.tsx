@@ -5,6 +5,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import Animated, { useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
+import EventModal from '../../components/EventModal';  // Make sure this is the correct relative path
+
 
 type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -14,6 +16,7 @@ const MainPage: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>();
 
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for controlling modal visibility
   const translateX = useSharedValue(0);
   const userId = '6730848a218bf1def019bcb6';
 
@@ -79,6 +82,15 @@ const MainPage: React.FC = () => {
     transform: [{ translateX: translateX.value }],
   }));
 
+  // Toggle modal visibility
+  const handleEventPress = () => {
+    setIsModalVisible(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -87,9 +99,11 @@ const MainPage: React.FC = () => {
         {isActivityVisible && ( // Conditional rendering based on visibility state
           <PanGestureHandler onGestureEvent={gestureHandler}>
             <Animated.View style={[styles.activityContainer, animatedStyle]}>
+            <TouchableOpacity onPress={handleEventPress}> 
               <Text style={styles.activityTitle}>{activity.title}</Text>
               <Text style={styles.activityDate}>Date: {activity.date}</Text>
               <Text style={styles.activityDescription}>{activity.description}</Text>
+            </TouchableOpacity>
             </Animated.View>
           </PanGestureHandler>
         )}
@@ -111,6 +125,12 @@ const MainPage: React.FC = () => {
           <Text style={styles.navButtonText}>My Events</Text>
         </TouchableOpacity>
       </View>
+      {/* EventModal component */}
+      <EventModal
+        isVisible={isModalVisible}
+        activity={activity}
+        onClose={handleCloseModal}
+      />
     </View>
   );
 };
@@ -152,6 +172,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#666',
     marginBottom: 20,
+  },
+  activityAgeRange: {
+    fontSize: 18,
+    color: '#555',
+    marginTop: 10,
   },
   activityDescription: {
     fontSize: 22,
