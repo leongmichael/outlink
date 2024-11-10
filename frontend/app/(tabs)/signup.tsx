@@ -9,6 +9,7 @@ import { TextInput, Button, Checkbox } from 'react-native-paper';
 
 export default function SignUp() {
   const theme = useTheme();
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     email: '',
@@ -26,50 +27,94 @@ export default function SignUp() {
     zipcode: '',
   });
 
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.city) newErrors.city = 'City is required';
+    if (!formData.zipcode) newErrors.zipcode = 'Zipcode is required';
+    if (!formData.gender) newErrors.gender = 'Please select a gender';
+    
+    if (!Object.values(formData.preferences).some(pref => pref)) {
+      newErrors.preferences = 'Please select at least one preference';
+    }
+
+    if (!formData.birthdate) newErrors.birthdate = 'Birthdate is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      console.log(formData);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <ThemedView style={styles.formContainer}>
         <ThemedText type="title" style={styles.title}>Sign Up</ThemedText>
 
         <TextInput
-          label="Email"
+          label="Email *"
           value={formData.email}
           onChangeText={(text) => setFormData({...formData, email: text})}
           style={styles.input}
           mode="outlined"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.email ? '#FF0000' : '#6A8A73'}
+          error={!!errors.email}
+          helperText={errors.email}
         />
 
         <TextInput
-          label="Password"
+          label="Password *"
           value={formData.password}
           onChangeText={(text) => setFormData({...formData, password: text})}
           secureTextEntry
           style={styles.input}
           mode="outlined"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.password ? '#FF0000' : '#6A8A73'}
+          error={!!errors.password}
+          helperText={errors.password}
         />
 
         <TextInput
-          label="Full Name"
+          label="Full Name *"
           value={formData.name}
           onChangeText={(text) => setFormData({...formData, name: text})}
           style={styles.input}
           mode="outlined"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.name ? '#FF0000' : '#6A8A73'}
+          error={!!errors.name}
         />
+        {errors.name && (
+          <ThemedText style={styles.errorText}>{errors.name}</ThemedText>
+        )}
 
-        <ThemedText style={styles.label}>Birthdate</ThemedText>
+        <ThemedText style={styles.label}>Birthdate *</ThemedText>
+        {errors.birthdate && (
+          <ThemedText style={styles.errorText}>{errors.birthdate}</ThemedText>
+        )}
         <DateTimePicker
           value={formData.birthdate}
           onChange={(event, date) => date && setFormData({...formData, birthdate: date})}
           mode="date"
+          style={[
+            styles.datePicker,
+            errors.birthdate && styles.datePickerError
+          ]}
         />
 
-        <ThemedText style={styles.label}>Preferences</ThemedText>
+        <ThemedText style={styles.label}>Preferences *</ThemedText>
+        {errors.preferences && (
+          <ThemedText style={styles.errorText}>{errors.preferences}</ThemedText>
+        )}
         <ThemedView style={styles.checkboxGroup}>
           <Checkbox.Item 
             label="Land Activities" 
@@ -97,7 +142,10 @@ export default function SignUp() {
           />
         </ThemedView>
 
-        <ThemedText style={styles.label}>Gender</ThemedText>
+        <ThemedText style={styles.label}>Gender *</ThemedText>
+        {errors.gender && (
+          <ThemedText style={styles.errorText}>{errors.gender}</ThemedText>
+        )}
         <ThemedView style={styles.checkboxGroup}>
           {['Male', 'Female', 'Do not wish to state', 'Other'].map((option) => (
             <Checkbox.Item
@@ -111,31 +159,39 @@ export default function SignUp() {
         </ThemedView>
 
         <TextInput
-          label="City"
+          label="City *"
           value={formData.city}
           onChangeText={(text) => setFormData({...formData, city: text})}
           style={styles.input}
           mode="outlined"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.city ? '#FF0000' : '#6A8A73'}
+          error={!!errors.city}
         />
+        {errors.city && (
+          <ThemedText style={styles.errorText}>{errors.city}</ThemedText>
+        )}
 
         <TextInput
-          label="Zipcode"
+          label="Zipcode *"
           value={formData.zipcode}
           onChangeText={(text) => setFormData({...formData, zipcode: text})}
           style={styles.input}
           mode="outlined"
           keyboardType="numeric"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.zipcode ? '#FF0000' : '#6A8A73'}
+          error={!!errors.zipcode}
         />
+        {errors.zipcode && (
+          <ThemedText style={styles.errorText}>{errors.zipcode}</ThemedText>
+        )}
 
         <Button 
           mode="contained" 
           style={styles.submitButton} 
           buttonColor="#6A8A73"
-          onPress={() => console.log(formData)}>
+          onPress={handleSubmit}>
           Sign Up
         </Button>
       </ThemedView>
@@ -185,5 +241,17 @@ const styles = StyleSheet.create({
   submitButton: {
     marginTop: 20,
     paddingVertical: 8,
+  },
+  errorText: {
+    color: '#FF0000',
+    fontSize: 12,
+    marginTop: -5,
+    marginBottom: 5,
+  },
+  datePicker: {
+    marginBottom: 15,
+  },
+  datePickerError: {
+    borderColor: '#FF0000',
   },
 });
