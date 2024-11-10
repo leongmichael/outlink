@@ -8,36 +8,61 @@ import { ThemedView } from '@/components/ThemedView';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!email) newErrors.email = 'Email is required';
+    if (!password) newErrors.password = 'Password is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleLogin = () => {
-    
+    if (validateForm()) {
+      // Proceed with login logic
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
       <ThemedView style={styles.formContainer}>
-        <ThemedText type="title" style={styles.title}>Sign In</ThemedText>
+        <ThemedText type="title" style={styles.title}>Welcome Back!</ThemedText>
         
         <TextInput
-          label="Email"
+          label="Email *"
           value={email}
           onChangeText={setEmail}
           style={styles.input}
           mode="outlined"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.email ? '#FF0000' : '#6A8A73'}
+          error={!!errors.email}
         />
+        {errors.email && (
+          <ThemedText style={styles.errorText}>{errors.email}</ThemedText>
+        )}
         
         <TextInput
-          label="Password"
+          label="Password *"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           style={styles.input}
           mode="outlined"
           activeOutlineColor="#6A8A73"
-          outlineColor="#6A8A73"
+          outlineColor={errors.password ? '#FF0000' : '#6A8A73'}
+          error={!!errors.password}
         />
+        {errors.password && (
+          <ThemedText style={styles.errorText}>{errors.password}</ThemedText>
+        )}
+
+        {errors.submit && (
+          <ThemedText style={styles.errorText}>{errors.submit}</ThemedText>
+        )}
         
         <Button 
           mode="contained" 
@@ -81,6 +106,12 @@ const styles = StyleSheet.create({
   submitButton: {
     marginTop: 20,
     paddingVertical: 8,
+  },
+  errorText: {
+    color: '#FF0000',
+    fontSize: 12,
+    marginTop: -5,
+    marginBottom: 5,
   },
 });
 
