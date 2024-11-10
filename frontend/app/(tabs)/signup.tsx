@@ -28,6 +28,36 @@ export default function SignUp() {
     zipcode: '',
   });
 
+  const getPreferences = () => { // grab all the preferences that are true and return an array of them
+    const preferences = [];
+    for (const [key, value] of Object.entries(formData.preferences)) {
+      if (value) {
+        preferences.push(key);
+      }
+    }
+    return preferences;
+  };
+
+  const [backendFormat, setBackendFormat] = useState({});
+
+  const applyBackendFormat = async () => {
+    setBackendFormat({
+      admin: {
+        email: formData.email,
+        password: formData.password,
+      },
+      personal: {
+        // name: formData.name,
+        zipCode: formData.zipcode,
+        city: formData.city,
+        gender: formData.gender,
+        birthdate: formData.birthdate,
+        points: 0,
+      },
+      preferences: getPreferences()
+    });
+  };
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -48,9 +78,11 @@ export default function SignUp() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      console.log(formData);
+      await applyBackendFormat();
+      console.log(backendFormat);
+      // Here you can add your API call or navigation logic
     }
   };
 
