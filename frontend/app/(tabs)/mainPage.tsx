@@ -74,7 +74,7 @@ const MainPage: React.FC = () => {
       <View style={styles.navbar}>
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => navigation.navigate('Main')}
+          onPress={() => navigation.navigate('mainPage')}
         >
           <Text style={styles.navButtonText}>Main</Text>
         </TouchableOpacity>
@@ -100,10 +100,11 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   header: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 20,
+    marginBottom: 30,
+    marginTop: 30,
   },
   activityContainer: {
     backgroundColor: '#fff',
@@ -114,28 +115,29 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 2,
+    minHeight: 300,
   },
   activityTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#4285F4',
     marginBottom: 10,
   },
   activityDate: {
-    fontSize: 16,
+    fontSize: 20,
     color: '#666',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   activityDescription: {
-    fontSize: 16,
+    fontSize: 22,
     color: '#333',
   },
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 60,
-    backgroundColor: '#4285F4',
+    height: 80,
+    backgroundColor: '#14517B',
     position: 'absolute',
     bottom: 0,
     width: '100%',
