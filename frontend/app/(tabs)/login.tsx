@@ -5,7 +5,9 @@ import { TextInput, Button } from 'react-native-paper';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-const LoginScreen = () => {
+const API_URL = 'http://localhost:8080';
+
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -20,9 +22,44 @@ const LoginScreen = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (validateForm()) {
-      // Proceed with login logic
+      try {
+        const loginData = {
+          email,
+          password,
+        };
+        
+        const response = await fetch(`${API_URL}/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(loginData)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          setErrors(prev => ({
+            ...prev,
+            submit: errorData.mssg || 'Login failed. Please try again.'
+          }));
+          return;
+        }
+
+        const data = await response.json();
+        console.log('Login successful:', data);
+        
+        // Navigate to home page on successful login
+        router.replace('/(tabs)/');
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        setErrors(prev => ({
+          ...prev,
+          submit: 'Login failed. Please try again.'
+        }));
+      }
     }
   };
 
@@ -115,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default Login;

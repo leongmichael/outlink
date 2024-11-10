@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { TextInput, Button, Checkbox } from 'react-native-paper';
 
-const API_URL = 'http://localhost:8080'; // Change this to your server URL
+const API_URL = 'http://localhost:8080';
 
 export default function SignUp() {
   const theme = useTheme();
@@ -133,7 +133,7 @@ export default function SignUp() {
         const result = await createUser(formattedData);
         console.log('User created successfully:', result);
         
-        router.replace('/(tabs)/');
+        router.replace('/(tabs)/login');
         
       } catch (error) {
         console.error('Failed to create user:', error);
