@@ -100,9 +100,11 @@ const getEventsByDateRange = async (req, res) => {
         $gte: startDate,
         $lt: endDate,
       },
-    });
+    }).select('_id'); // Only select the _id field
 
-    res.status(200).json(events);
+    // Extract and return just the event IDs
+    const eventIds = events.map(event => event._id.toString());
+    res.status(200).json({ eventIds });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
