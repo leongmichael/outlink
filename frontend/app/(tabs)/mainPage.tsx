@@ -24,6 +24,7 @@ const MainPage: React.FC = () => {
     title: 'Yoga Workshop',
     description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
     date: '2024-11-12',
+    ageRange:'18-22'
   };
 
   // Handler for swipe gestures
@@ -78,6 +79,7 @@ const MainPage: React.FC = () => {
               <Text style={styles.activityTitle}>{activity.title}</Text>
               <Text style={styles.activityDate}>Date: {activity.date}</Text>
               <Text style={styles.activityDescription}>{activity.description}</Text>
+              <Text style={styles.activityAgeRange}>Age Range: {activity.ageRange}</Text>
             </TouchableOpacity>
             </Animated.View>
           </PanGestureHandler>
