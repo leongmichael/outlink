@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 import EventModal from '../../components/EventModal';
+import { useUser } from '@/context/UserContext';
 
 type MyEventsNavigationProp = StackNavigationProp<RootStackParamList, 'MyEvents'>;
 
@@ -20,6 +21,7 @@ const MyEvents: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { userId } = useUser();
 
   useEffect(() => {
     fetchUserEvents();
@@ -27,8 +29,6 @@ const MyEvents: React.FC = () => {
 
   const fetchUserEvents = async () => {
     try {
-      // Replace with your actual API endpoint and user ID
-      const userId = '67303e71542cd5b701fd3f34'; // You'll need to get this from your auth context or storage
       const response = await fetch(`http://localhost:8080/user/events/${userId}`);
       const data = await response.json();
       
