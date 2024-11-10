@@ -1,81 +1,128 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import Animated, { useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
-import EventModal from '../../components/EventModal';  // Make sure this is the correct relative path
-
+import Animated, { 
+  useAnimatedGestureHandler, 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring,
+  runOnJS
+} from 'react-native-reanimated';
 import { useUser } from '@/context/UserContext';
 
-
-type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
+const SWIPE_THRESHOLD = 120;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const API_URL = 'http://localhost:8080';
 
 const MainPage: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>();
-
-  const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
-  const [isModalVisible, setIsModalVisible] = useState(false); // State for controlling modal visibility
+  const [currentEvents, setCurrentEvents] = useState<any[]>([]);
+  const [currentEventIndex, setCurrentEventIndex] = useState(0);
+  const { userId } = useUser();
   const translateX = useSharedValue(0);
 
-  const { userId } = useUser(); // Get userId from context
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
-  // Sample static activity data
-  const activity = {
-    eventId: '67306d90ea11ef1c50f03046',
-    title: 'Yoga Workshop',
-    description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
-    date: '2024-11-12',
-    ageRange:'18-22'
-  };
-
-  // API call to add activity to user's list
-  const addActivityToUserList = async () => {
+  const fetchEvents = async () => {
     try {
-      const response = await fetch(`${API_URL}/user/addEvent`, {
+      const today = new Date().toISOString().split('T')[0];
+      
+      console.log('Fetching events for date:', today);
+      console.log('Request URL:', `${API_URL}/events/getEventsByDateRange`);
+
+      const response = await fetch(`${API_URL}/events/getEventsByDateRange`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          eventId: activity.eventId,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ date: today }),
       });
 
-      if (response.ok) {
-        Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
-      } else {
-        const error = await response.json();
-        Alert.alert('Error', error.message || 'Failed to add activity');
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Server response:', text);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      const data = await response.json();
+      console.log('Received data:', data);
+      
+      if (!data.eventIds || !Array.isArray(data.eventIds)) {
+        throw new Error('Invalid response format: expected eventIds array');
+      }
+
+      // Fetch details for each event ID
+      const eventDetails = await Promise.all(
+        data.eventIds.map(async (eventId: string) => {
+          const eventResponse = await fetch(`${API_URL}/events/getEvent`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ eventId }),
+          });
+
+          if (!eventResponse.ok) {
+            const text = await eventResponse.text();
+            console.error(`Error response for event ${eventId}:`, text);
+            throw new Error(`Failed to fetch event ${eventId}`);
+          }
+
+          return eventResponse.json();
+        })
+      );
+      
+      console.log('Event details:', eventDetails);
+      setCurrentEvents(eventDetails);
     } catch (error) {
-      console.error('Error adding activity:', error);
-      Alert.alert('Error', 'Could not connect to server');
+      console.error('Detailed error:', error);
+      console.error('Error fetching events:', error.message);
     }
   };
 
-  // Handler for swipe gestures
+  const addEventToUser = async (eventId: string) => {
+    try {
+      await fetch(`${API_URL}/users/addEvent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          eventId,
+        }),
+      });
+      console.log("user id: ", userId);
+      console.log("event id: ", eventId);
+    } catch (error) {
+      console.error('Error adding event:', error);
+    }
+  };
+
   const handleSwipe = (direction: 'left' | 'right') => {
-    if (direction === 'right') {
-      addActivityToUserList(); // Call backend API to add activity
+    if (direction === 'right' && currentEvents[currentEventIndex]) {
+      addEventToUser(currentEvents[currentEventIndex]._id);
     }
-    setIsActivityVisible(false); // Hide activity after swipe
+    setCurrentEventIndex(prev => prev + 1);
+    translateX.value = 0;
   };
 
-  // Gesture handling
   const gestureHandler = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
     onActive: (event) => {
       translateX.value = event.translationX;
     },
-    onEnd: () => {
-      if (translateX.value > 100) {
-        runOnJS(handleSwipe)('right');
-        translateX.value = withSpring(0);
-      } else if (translateX.value < -100) {
-        runOnJS(handleSwipe)('left');
-        translateX.value = withSpring(0);
+    onEnd: (event) => {
+      if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
+        translateX.value = withSpring(Math.sign(event.translationX) * SCREEN_WIDTH);
+        runOnJS(handleSwipe)(event.translationX > 0 ? 'right' : 'left');
       } else {
         translateX.value = withSpring(0);
       }
@@ -86,35 +133,30 @@ const MainPage: React.FC = () => {
     transform: [{ translateX: translateX.value }],
   }));
 
-  // Toggle modal visibility
-  const handleEventPress = () => {
-    setIsModalVisible(true);
-  };
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-  };
-
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.header}>Featured Activity</Text>
-
-        {isActivityVisible && ( // Conditional rendering based on visibility state
+        <Text style={styles.header}>Featured Events</Text>
+        
+        {currentEvents[currentEventIndex] && (
           <PanGestureHandler onGestureEvent={gestureHandler}>
-            <Animated.View style={[styles.activityContainer, animatedStyle]}>
-            <TouchableOpacity onPress={handleEventPress}> 
-              <Text style={styles.activityTitle}>{activity.title}</Text>
-              <Text style={styles.activityDate}>Date: {activity.date}</Text>
-              <Text style={styles.activityDescription}>{activity.description}</Text>
-              <Text style={styles.activityAgeRange}>Age Range: {activity.ageRange}</Text>
-            </TouchableOpacity>
+            <Animated.View style={[styles.eventCard, animatedStyle]}>
+              <Text style={styles.eventTitle}>{currentEvents[currentEventIndex].location}</Text>
+              <Text style={styles.eventDetails}>
+                Date: {new Date(currentEvents[currentEventIndex].date).toLocaleDateString()}
+              </Text>
+              <Text style={styles.eventDetails}>
+                Age Range: {currentEvents[currentEventIndex].ageRange}
+              </Text>
             </Animated.View>
           </PanGestureHandler>
         )}
+        
+        {currentEventIndex >= currentEvents.length && (
+          <Text style={styles.noMoreEvents}>No more events to show!</Text>
+        )}
       </ScrollView>
 
-      {/* Bottom Navigation Bar */}
       <View style={styles.navbar}>
         <TouchableOpacity
           style={styles.navButton}
@@ -130,12 +172,6 @@ const MainPage: React.FC = () => {
           <Text style={styles.navButtonText}>My Events</Text>
         </TouchableOpacity>
       </View>
-      {/* EventModal component */}
-      <EventModal
-        isVisible={isModalVisible}
-        activity={activity}
-        onClose={handleCloseModal}
-      />
     </View>
   );
 };
@@ -156,37 +192,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 30,
   },
-  activityContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-    minHeight: 300,
-  },
-  activityTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4285F4',
-    marginBottom: 10,
-  },
-  activityDate: {
-    fontSize: 20,
-    color: '#666',
-    marginBottom: 20,
-  },
-  activityAgeRange: {
-    fontSize: 18,
-    color: '#555',
-    marginTop: 10,
-  },
-  activityDescription: {
-    fontSize: 22,
-    color: '#333',
-  },
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -204,6 +209,37 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  eventCard: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    marginHorizontal: 20,
+    marginVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  eventTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  eventDetails: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#666',
+  },
+  noMoreEvents: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#666',
+    marginTop: 20,
   },
 });
 
