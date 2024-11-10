@@ -40,26 +40,6 @@ export default function SignUp() {
     return preferences;
   };
 
-  const [backendFormat, setBackendFormat] = useState({});
-
-  const applyBackendFormat = async () => {
-    setBackendFormat({
-      admin: {
-        email: formData.email,
-        password: formData.password,
-      },
-      personal: {
-        // name: formData.name,
-        zipCode: formData.zipcode,
-        city: formData.city,
-        gender: formData.gender,
-        birthdate: formData.birthdate,
-        points: 0,
-      },
-      preferences: getPreferences()
-    });
-  };
-
   const validateForm = () => {
     const newErrors = {};
     
@@ -82,6 +62,8 @@ export default function SignUp() {
 
   const createUser = async (userData) => {
     try {
+      console.log('Attempting to create user with data:', JSON.stringify(userData, null, 2));
+      
       const response = await fetch(`${API_URL}/user/createAccount`, {
         method: 'POST',
         headers: {
@@ -91,37 +73,52 @@ export default function SignUp() {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorText = await response.text();
+        console.error('Server response:', errorText);
+        throw new Error(errorText);
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('Detailed error:', error);
       throw error;
     }
+  };
+
+  const applyBackendFormat = () => {
+    // Convert zipcode to Number as required by schema
+    const zipCodeNumber = parseInt(formData.zipcode);
+
+    // Return the formatted data instead of setting state
+    return {
+      admin: {
+        userId: 1,
+        email: formData.email,
+        password: formData.password,
+      },
+      preferences: getPreferences(),
+      personal: {
+        zipCode: zipCodeNumber,
+        city: formData.city,
+        gender: formData.gender,
+        birthdate: formData.birthdate,
+        points: 0,  // Required by schema
+      }
+    };
   };
 
   const handleSubmit = async () => {
     if (validateForm()) {
       try {
-        await applyBackendFormat();
-        // Add userId to match the server's expected format
-        const userDataWithId = {
-          ...backendFormat,
-          admin: {
-            ...backendFormat.admin,
-            userId: Math.floor(Math.random() * 1000000) // Temporary ID generation
-          }
-        };
-        
-        const result = await createUser(userDataWithId);
+        // Get the formatted data directly
+        const formattedData = applyBackendFormat();
+        console.log('Sending data:', formattedData); // Debug log
+        const result = await createUser(formattedData);
         console.log('User created successfully:', result);
-        // Handle successful creation (e.g., navigate to login or home screen)
         
       } catch (error) {
         console.error('Failed to create user:', error);
-        // Handle error (e.g., show error message to user)
         setErrors(prev => ({
           ...prev,
           submit: 'Failed to create account. Please try again.'
