@@ -100,6 +100,8 @@ const MainPage: React.FC = () => {
           eventId,
         }),
       });
+      console.log("user id: ", userId);
+      console.log("event id: ", eventId);
     } catch (error) {
       console.error('Error adding event:', error);
     }
