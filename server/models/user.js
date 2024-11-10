@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
         required: true,
       },
     },
+    events: {
+      type: [String],
+      required: false,
+    },
   },
   { collection: "users" }
 );
