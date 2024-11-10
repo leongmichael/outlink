@@ -41,6 +41,16 @@ export default function SignUp() {
     return preferences;
   };
 
+  const handleZipcodeChange = (text) => {
+    // Only allow numbers
+    const numbersOnly = text.replace(/[^0-9]/g, '');
+    
+    // Limit to 5 digits
+    const truncated = numbersOnly.slice(0, 5);
+    
+    setFormData({...formData, zipcode: truncated});
+  };
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -56,6 +66,13 @@ export default function SignUp() {
     }
 
     if (!formData.birthdate) newErrors.birthdate = 'Birthdate is required';
+
+    // Add zipcode validation
+    if (!formData.zipcode) {
+      newErrors.zipcode = 'Zipcode is required';
+    } else if (formData.zipcode.length !== 5) {
+      newErrors.zipcode = 'Zipcode must be 5 digits';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -267,10 +284,11 @@ export default function SignUp() {
         <TextInput
           label="Zipcode *"
           value={formData.zipcode}
-          onChangeText={(text) => setFormData({...formData, zipcode: text})}
+          onChangeText={handleZipcodeChange}
           style={styles.input}
           mode="outlined"
           keyboardType="numeric"
+          maxLength={5}
           activeOutlineColor="#6A8A73"
           outlineColor={errors.zipcode ? '#FF0000' : '#6A8A73'}
           error={!!errors.zipcode}
