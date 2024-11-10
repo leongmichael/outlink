@@ -8,16 +8,18 @@ import Animated, { useAnimatedGestureHandler, useSharedValue, useAnimatedStyle, 
 
 type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
+const API_URL = 'http://localhost:8080';
+
 const MainPage: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>();
 
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
   const translateX = useSharedValue(0);
-  const userId = 'user123';
+  const userId = '67306f1e7a6c2bb4d02ecc27';
 
   // Sample static activity data
   const activity = {
-    id: '1',
+    eventId: '6730508fa6674ec63f2142ee',
     title: 'Yoga Workshop',
     description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
     date: '2024-11-12',
@@ -26,12 +28,12 @@ const MainPage: React.FC = () => {
   // API call to add activity to user's list
   const addActivityToUserList = async () => {
     try {
-      const response = await fetch('http://localhost:8080/user/addEvent', {
+      const response = await fetch(`${API_URL}/user/addEvent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
-          activityId: activity.id,
+          eventId: activity.eventId,
         }),
       });
 
