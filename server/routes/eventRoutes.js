@@ -1,5 +1,5 @@
 const express = require("express");
-const { createEvent } = require("../controllers/eventController");
+const { createEvent, getEvent } = require("../controllers/eventController");
 
 const router = express.Router();
 
@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/createEvent", createEvent);
 
 // get event info
+router.post("/getEvent", getEvent);
 
 // delete event
 

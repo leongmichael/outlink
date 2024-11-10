@@ -53,7 +53,7 @@ const loginUser = async (req, res) => {
       console.log("userpass: ", user.admin.password);
       return res.status(400).json({ message: "password incorrect" });
     }
-    res.json({ mssg: "User logged in" });
+    res.json({ user });
   } catch (error) {
     res.status(401).json({ mssg: error.message });
   }
