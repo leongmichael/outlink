@@ -10,6 +10,7 @@ import { TextInput, Button, Checkbox } from 'react-native-paper';
 export default function SignUp() {
   const theme = useTheme();
   const [errors, setErrors] = useState({});
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -50,6 +51,13 @@ export default function SignUp() {
   const handleSubmit = () => {
     if (validateForm()) {
       console.log(formData);
+    }
+  };
+
+  const onDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setFormData({...formData, birthdate: selectedDate});
     }
   };
 
@@ -101,15 +109,25 @@ export default function SignUp() {
         {errors.birthdate && (
           <ThemedText style={styles.errorText}>{errors.birthdate}</ThemedText>
         )}
-        <DateTimePicker
-          value={formData.birthdate}
-          onChange={(event, date) => date && setFormData({...formData, birthdate: date})}
-          mode="date"
-          style={[
-            styles.datePicker,
-            errors.birthdate && styles.datePickerError
-          ]}
-        />
+        <Button
+          mode="outlined"
+          onPress={() => setShowDatePicker(true)}
+          style={[styles.dateButton, errors.birthdate && styles.dateButtonError]}
+          textColor="#6A8A73"
+        >
+          {formData.birthdate 
+            ? formData.birthdate.toLocaleDateString() 
+            : 'Select Birthdate'}
+        </Button>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={formData.birthdate || new Date()}
+            onChange={onDateChange}
+            mode="date"
+            maximumDate={new Date()}
+          />
+        )}
 
         <ThemedText style={styles.label}>Preferences *</ThemedText>
         {errors.preferences && (
@@ -252,6 +270,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   datePickerError: {
+    borderColor: '#FF0000',
+  },
+  dateButton: {
+    marginBottom: 15,
+    borderColor: '#6A8A73',
+  },
+  dateButtonError: {
     borderColor: '#FF0000',
   },
 });
