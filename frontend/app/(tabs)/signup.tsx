@@ -94,7 +94,6 @@ export default function SignUp() {
     // Return the formatted data instead of setting state
     return {
       admin: {
-        userId: 1,
         email: formData.email,
         password: formData.password,
       },
