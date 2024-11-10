@@ -1,0 +1,77 @@
+[
+  {
+    "name": "South Park",
+    "address": "64 S Park St, San Francisco",
+    "type": "park"
+  },
+  {
+    "name": "Rincon Park",
+    "address": "The Embarcadero & Folsom St, San Francisco",
+    "type": "park"
+  },
+  {
+    "name": "Francisco Park",
+    "address": "Russian Hill Park, Bay St &, Larkin St, San Francisco",
+    "type": "park"
+  },
+  {
+    "name": "Jackson Park",
+    "address": "1500 Mariposa St, San Francisco",
+    "type": "park"
+  },
+  {
+    "name": "Guerrero Park",
+    "address": "618 San Jose Avenue, San Francisco",
+    "type": "park"
+  },
+  {
+    "name": "Historic Trail Trailhead",
+    "address": "1235 Stanyan St, San Francisco",
+    "type": "trail"
+  },
+  {
+    "name": "Battery East Trailhead",
+    "address": "Battery E Trail, San Francisco",
+    "type": "trail"
+  },
+  {
+    "name": "Mount Sutro Open Space Reserve",
+    "address": "San Francisco",
+    "type": "trail"
+  },
+  {
+    "name": "Ecology Trail",
+    "address": "Arguello Blvd, San Francisco",
+    "type": "trail"
+  },
+  {
+    "name": "Glen Canyon Trailhead",
+    "address": "Unnamed Trail, San Francisco",
+    "type": "trail"
+  },
+  {
+    "name": "Mount Sutro Open Space Reserve",
+    "address": "San Francisco",
+    "type": "hiking"
+  },
+  {
+    "name": "Eureka Peak",
+    "address": "Eureka Peak, San Francisco",
+    "type": "hiking"
+  },
+  {
+    "name": "Presidio Promenade Trail",
+    "address": "San Francisco",
+    "type": "hiking"
+  },
+  {
+    "name": "Pemberton Place Steps",
+    "address": "Pemberton Pl, San Francisco",
+    "type": "hiking"
+  },
+  {
+    "name": "Glen Canyon Trailhead",
+    "address": "Unnamed Trail, San Francisco",
+    "type": "hiking"
+  }
+]

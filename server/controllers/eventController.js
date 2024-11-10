@@ -1,6 +1,8 @@
 const Event = require("../models/event");
 const { events } = require("../models/user");
 const mongoose = require("mongoose");
+const { populateDay } = require("../services/eventServices");
+const { restart } = require("nodemon");
 
 // create an event
 const createEvent = async (req, res) => {
@@ -39,7 +41,17 @@ const getEvent = async (req, res) => {
   }
 };
 
+const randomEvent = async (req, res) => {
+  try {
+    populateDay("90278");
+    res.status(200).json({ mssg: "Populate was called" });
+  } catch (error) {
+    res.status(500).json({ mssg: error.message });
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
+  randomEvent,
 };

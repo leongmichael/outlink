@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Rudolph Park",
+    "address": "14719 Larch Ave, Lawndale",
+    "type": "park"
+  },
+  {
+    "name": "William Green Park",
+    "address": "4558 168th St, Lawndale",
+    "type": "park"
+  },
+  {
+    "name": "Pueblo Park Del Amo Blvd",
+    "address": "2292 Del Amo Blvd, Torrance",
+    "type": "park"
+  },
+  {
+    "name": "Franklin Park",
+    "address": "807 S Inglewood Ave, Redondo Beach",
+    "type": "park"
+  },
+  {
+    "name": "8th Street Park",
+    "address": "1746 Eighth St, Manhattan Beach",
+    "type": "park"
+  },
+  {
+    "name": "Veteran’s Park Trail",
+    "address": "501 Herondo St, Hermosa Beach",
+    "type": "trail"
+  },
+  {
+    "name": "Wood Chip Trail",
+    "address": "1601 Manhattan Beach Blvd, Manhattan Beach",
+    "type": "trail"
+  },
+  {
+    "name": "Entradero Park",
+    "address": "5500 Towers St, Torrance",
+    "type": "trail"
+  },
+  {
+    "name": "Glasgow Park",
+    "address": "13435 Glasgow Pl, Hawthorne",
+    "type": "trail"
+  },
+  {
+    "name": "Veterans Parkway",
+    "address": "400 N Ardmore Ave, Manhattan Beach",
+    "type": "trail"
+  },
+  {
+    "name": "Veteran’s Park Trail",
+    "address": "501 Herondo St, Hermosa Beach",
+    "type": "hiking"
+  },
+  {
+    "name": "Madrona Marsh Preserve and Nature Center",
+    "address": "3201 Plaza del Amo, Torrance",
+    "type": "hiking"
+  },
+  {
+    "name": "Veterans Parkway",
+    "address": "400 N Ardmore Ave, Manhattan Beach",
+    "type": "hiking"
+  },
+  {
+    "name": "Hopkins Wilderness Park",
+    "address": "1102 Camino Real, Redondo Beach",
+    "type": "hiking"
+  },
+  {
+    "name": "Glasgow Park",
+    "address": "13435 Glasgow Pl, Hawthorne",
+    "type": "hiking"
+  }
+]

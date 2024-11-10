@@ -1,5 +1,9 @@
 const express = require("express");
-const { createEvent, getEvent } = require("../controllers/eventController");
+const {
+  createEvent,
+  getEvent,
+  randomEvent,
+} = require("../controllers/eventController");
 
 const router = express.Router();
 
@@ -10,6 +14,7 @@ router.post("/createEvent", createEvent);
 router.post("/getEvent", getEvent);
 
 // delete event
+router.get("/randomEvent", randomEvent);
 
 // modify event
 
