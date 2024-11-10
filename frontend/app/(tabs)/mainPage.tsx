@@ -12,8 +12,8 @@ const MainPage: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>();
 
   const [isActivityVisible, setIsActivityVisible] = useState(true); // New state to track visibility
-  const [savedActivities, setSavedActivities] = useState<string[]>([]);
   const translateX = useSharedValue(0);
+  const userId = 'user123';
 
   // Sample static activity data
   const activity = {
@@ -23,11 +23,34 @@ const MainPage: React.FC = () => {
     date: '2024-11-12',
   };
 
+  // API call to add activity to user's list
+  const addActivityToUserList = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/user/addEvent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          activityId: activity.id,
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
+      } else {
+        const error = await response.json();
+        Alert.alert('Error', error.message || 'Failed to add activity');
+      }
+    } catch (error) {
+      console.error('Error adding activity:', error);
+      Alert.alert('Error', 'Could not connect to server');
+    }
+  };
+
   // Handler for swipe gestures
   const handleSwipe = (direction: 'left' | 'right') => {
     if (direction === 'right') {
-      setSavedActivities((prev) => [...prev, activity.title]);
-      Alert.alert('Activity Added', `${activity.title} has been added to your list!`);
+      addActivityToUserList(); // Call backend API to add activity
     }
     setIsActivityVisible(false); // Hide activity after swipe
   };
