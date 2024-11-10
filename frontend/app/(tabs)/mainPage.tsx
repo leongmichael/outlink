@@ -22,7 +22,7 @@ const MainPage: React.FC = () => {
 
   // Sample static activity data
   const activity = {
-    eventId: '6730508fa6674ec63f2142ee',
+    eventId: '67306d90ea11ef1c50f03046',
     title: 'Yoga Workshop',
     description: 'Join our guided yoga workshop to learn relaxation techniques and breathing exercises.',
     date: '2024-11-12',
